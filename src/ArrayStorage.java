@@ -6,21 +6,19 @@ public class ArrayStorage {
     private int size;
 
     void clear() {
-        for (Resume r : storage
-        ) {
-            r = null;
+        for (int i = 0; i < size; i++) {
+            storage[i] = null;
         }
         size = 0;
     }
 
     void save(Resume r) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                storage[i] = r;
-                size++;
-                break;
-            }
+        if (size == 0) {
+            storage[0] = r;
+        } else {
+            storage[size] = r;
         }
+        ++size;
     }
 
     Resume get(String uuid) {
@@ -39,15 +37,18 @@ public class ArrayStorage {
     void delete(String uuid) {
         Resume r;
 
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i].uuid == uuid && i != size - 1) {
-                r = storage[size - 1];
-                storage[i] = r;
-                storage[size - 1] = null;
-                --size;
-                break;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid == uuid) {
+                storage[i] = null;
+                if (i != size - 1) {
+                    r = storage[size - 1];
+                    storage[size - 1] = storage[i];
+                    storage[i] = r;
+                }
             }
+            break;
         }
+        --size;
     }
 
     /**
@@ -55,18 +56,9 @@ public class ArrayStorage {
      */
     Resume[] getAll() {
         Resume[] resumes = new Resume[size];
-        Resume resume;
 
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null) {
-                resume = storage[i];
-                for (int j = 0; j < resumes.length; j++) {
-                    if (resumes[j] == null) {
-                        resumes[j] = resume;
-                        break;
-                    }
-                }
-            }
+        for (int i = 0; i < resumes.length; i++) {
+            resumes[i] = storage[i];
         }
         return resumes;
     }
