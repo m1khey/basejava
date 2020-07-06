@@ -13,21 +13,18 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        if (size == 0) {
-            storage[0] = r;
-        } else {
-            storage[size] = r;
-        }
+
+        storage[size] = r;
+
         ++size;
     }
 
     Resume get(String uuid) {
         Resume resume = null;
 
-        for (Resume r : getAll()
-        ) {
-            if (r.uuid == uuid) {
-                resume = r;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid == uuid) {
+                resume = storage[i];
                 break;
             }
         }
