@@ -1,9 +1,11 @@
-../../.idea
-../out
+
+.idea
 *.iml
+out
 log
-/out/*
-*/lib
+lib
 
 
 
+*/lib/*
+*/lib/*
