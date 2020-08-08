@@ -2,46 +2,39 @@ package storage;
 
 import model.Resume;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MapUuidStorage extends AbstractStorage {
-    Map<String, Resume> map = new HashMap<>();
+    private Map<String, Resume> map = new HashMap<>();
 
     @Override
     protected String getSearchKey(String uuid) {
-        for (Map.Entry<String,Resume> m : map.entrySet()) {
-            if (m.getKey().equals(uuid)) {
-                return uuid;
-            }
-        }
-        return null;
+        return uuid;
     }
 
     @Override
-    protected void doUpdate(Resume r, Object searchKey) {
-        map.put((String) searchKey, r);
+    protected void doUpdate(Resume r, Object uuid) {
+        map.put((String) uuid, r);
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return searchKey != null;
+    protected boolean isExist(Object uuid) {
+        return map.containsKey((String) uuid);
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return map.get(searchKey);
+    protected void doSave(Resume r, Object uuid) {
+        map.put((String) uuid, r);
     }
 
     @Override
-    protected void doSave(Resume r, Object searchKey) {
-        searchKey=r.getUuid();
-        map.put((String) searchKey, r);
+    protected Resume doGet(Object uuid) {
+        return map.get((String) uuid);
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        map.remove(searchKey);
+    protected void doDelete(Object uuid) {
+        map.remove((String) uuid);
     }
 
     @Override
@@ -50,8 +43,8 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return map.values().toArray(new Resume[map.size()]);
+    public List<Resume> doCopyAll() {
+        return new ArrayList<>(map.values());
     }
 
     @Override

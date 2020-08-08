@@ -5,7 +5,7 @@ import model.Resume;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage extends AbstractArrayStorage{
+public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void fillDeletedElement(int index) {
@@ -17,7 +17,6 @@ public class ArrayStorage extends AbstractArrayStorage{
         storage[size] = r;
     }
 
-    @Override
     protected Integer getSearchKey(String uuid) {
         for (int i = 0; i < size; i++) {
             if (uuid.equals(storage[i].getUuid())) {
