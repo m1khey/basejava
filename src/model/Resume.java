@@ -38,6 +38,18 @@ public class Resume implements Comparable<Resume>, Serializable {
     public Resume() {
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return sections;
+    }
+
     public String getUuid() {
         return uuid;
     }
