@@ -1,7 +1,6 @@
 package storage.serializer;
 
-import model.ContactType;
-import model.Resume;
+import model.*;
 
 import java.io.*;
 import java.util.Map;
@@ -19,9 +18,14 @@ public class DataStreamSerializer implements StreamSerializer {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
             }
+            Map <SectionType, Section> sections= r.getSections();             // TODO implements sections
 
-
-            // TODO implements sections
+            dos.writeInt(sections.size());
+            for (Map.Entry<SectionType, Section> entry : sections.entrySet()
+                 ) {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue().toString());
+            }
         }
     }
 
@@ -34,6 +38,9 @@ public class DataStreamSerializer implements StreamSerializer {
             int size = dis.readInt();
             for (int i = 0; i < size; i++) {
                 resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
+            }
+            for (int i = 0; i < size; i++) {
+                resume.addSection(SectionType.valueOf(dis.readUTF()), new ListSection());
             }
             // TODO implements sections
             return resume;
