@@ -5,6 +5,7 @@ import exception.NotExistStorageException;
 import model.*;
 import org.junit.Before;
 import org.junit.Test;
+import util.Config;
 
 import java.io.File;
 import java.time.Month;
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("D:\\basejava\\storage");
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
 
     protected Storage storage;
 
