@@ -40,8 +40,8 @@ public class Config {
     }
 
     private static File getHomeDir() {
-        String prop = "D:\\basejava";
-        File homeDir = new File(prop);
+        String prop = System.getProperty("homedir");
+        File homeDir = new File(prop == null ? "." : prop);
         if (!homeDir.isDirectory()) {
             throw new IllegalStateException(homeDir + " is not directory");
         }
