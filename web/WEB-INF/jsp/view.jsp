@@ -17,7 +17,7 @@
                          type="java.util.Map.Entry<model.ContactType, java.lang.String>"/>
                 <%=contactEntry.getKey().toHtml(contactEntry.getValue())%><br/>
         </c:forEach>
-    <p>
+    </p>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

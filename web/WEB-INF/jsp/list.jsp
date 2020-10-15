@@ -1,6 +1,4 @@
 <%@ page import="model.ContactType" %>
-<%@ page import="model.Resume" %>
-<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -11,7 +9,7 @@
     <title>Список всех резюме</title>
 </head>
 <body>
-<jsp:include page = "fragments/header.jsp"/>
+<jsp:include page="fragments/header.jsp"/>
 <section>
     <table border="1" cellpadding="8" cellspacing="0">
         <tr>
@@ -31,6 +29,6 @@
         </c:forEach>
     </table>
 </section>
-<jsp:include page = "fragments/footer.jsp"/>
+<jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>
