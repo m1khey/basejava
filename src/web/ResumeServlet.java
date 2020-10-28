@@ -2,8 +2,11 @@ package web;
 
 import model.ContactType;
 import model.Resume;
+import model.SectionType;
+import model.TextSection;
 import storage.Storage;
 import util.Config;
+import util.HtmlUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -29,11 +32,28 @@ public class ResumeServlet extends HttpServlet {
         r.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
-            if (value != null && value.trim().length() != 0) {
-                r.addContact(type, value);
-            } else {
+            if (HtmlUtil.isEmpty(value)){
                 r.getContacts().remove(type);
+            } else {
+                r.setContact(type,value);
             }
+        }
+        for (SectionType type:SectionType.values()
+             ) {
+            String value = request.getParameter(type.name());
+            String [] values = request.getParameterValues(type.name());
+
+            if (HtmlUtil.isEmpty(value) && values.length<2) {
+                r.getSections().remove(type);
+            } else {
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        r.setSection(type,new TextSection(value));
+                        break;
+                }
+            }
+
         }
         storage.update(r);
         response.sendRedirect("resume");
