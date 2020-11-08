@@ -1,11 +1,9 @@
 package web;
 
-import model.ContactType;
-import model.Resume;
-import model.SectionType;
-import model.TextSection;
+import model.*;
 import storage.Storage;
 import util.Config;
+import util.DateUtil;
 import util.HtmlUtil;
 
 import javax.servlet.ServletConfig;
@@ -14,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage; // = Config.get().getStorage();
@@ -51,9 +51,36 @@ public class ResumeServlet extends HttpServlet {
                     case PERSONAL:
                         r.setSection(type,new TextSection(value));
                         break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        r.setSection(type,new ListSection(value.split("\\n")));
+                        break;
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        List <Organization> orgs = new ArrayList<>();
+                        String[] urls = request.getParameterValues(type.name()+"url");
+                        for (int i = 0; i <values.length ; i++) {
+                            String name = values[i];
+                            if (!HtmlUtil.isEmpty(name)) {
+                                List<Organization.Position> positions = new ArrayList<>();
+                                String pfx = type.name()+i;
+                                String[] starDates = request.getParameterValues(pfx+"startDate");
+                                String[] endDates = request.getParameterValues(pfx+"endDate");
+                                String[] titles = request.getParameterValues(pfx+"title");
+                                String[] descriptions = request.getParameterValues(pfx + "descriptions");
+                                for (int j = 0; j <titles.length ; j++) {
+                                    if (!HtmlUtil.isEmpty(titles[j])){
+                                        positions.add(new Organization.Position(DateUtil.parse(starDates[j])
+                                                ,DateUtil.parse(endDates[j]),titles[j],descriptions[j]));
+                                    }
+                                }
+                                orgs.add(new Organization(new Link(name,urls[i]),positions));
+                            }
+                        }
+                        r.setSection(type,new OrganizationSection(orgs));
+                        break;
                 }
             }
-
         }
         storage.update(r);
         response.sendRedirect("resume");
@@ -74,8 +101,24 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "view":
+                r=storage.get(uuid);
+                break;
             case "edit":
                 r = storage.get(uuid);
+                for (SectionType type:new SectionType[]{SectionType.EXPERIENCE,SectionType.EDUCATION}) {
+                    OrganizationSection section = (OrganizationSection) r.getSection(type);
+                    List <Organization> emptyFirstOrganisations = new ArrayList<>();
+                    emptyFirstOrganisations.add(Organization.EMPTY);
+                    if (section !=null) {
+                        for (Organization org:section.getOrganizations()
+                             ) {
+                            List<Organization.Position> emptyFirstPositions = new ArrayList<>();
+                            emptyFirstPositions.add(Organization.Position.EMPTY);
+                            emptyFirstPositions.addAll(org.getPositions());
+                            emptyFirstOrganisations.add(new Organization(org.getHomePage(),emptyFirstPositions));
+                        }
+                    }
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
